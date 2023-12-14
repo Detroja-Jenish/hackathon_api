@@ -23,7 +23,8 @@ mongoose.connect(connectionString
         console.log(employee)
         if(employee !== null){
             console.log("aajjj")
-            res.send({...employee, status:201})
+            employee['status'] = 201;
+            res.status(201).send(employee)
         }else{
             res.send({msg:"hey", status:404})
         }
@@ -31,14 +32,14 @@ mongoose.connect(connectionString
     //------------------------------ AllEmployee
     app.get('/employee',async (req,res)=>{
         const employees = await Employee.find();
-        // console.log(employees)
+        console.log(employees)
         res.send(employees)
     })
 
     app.get('/employee/:id', async (req,res)=>{
         const emp = await Employee.findOne({empId:req.params.id})
         res.send(emp)
-    })
+    }) 
 
     //------------------------------ Project
 
@@ -48,9 +49,18 @@ mongoose.connect(connectionString
             teamLeader : req.body.teamLeader._id,
             teamMembers : req.body.teamMembers.map((emp)=>emp._id),
             allTasks : [],
-            projectId : req.body.projectId,
             desc : req.body.desc
         })
+
+        const teamMembers = await Employee.find({_id : {$in : req.body.teamMembers}})
+        teamMembers.forEach(emp => {
+            if(emp.workingProjects === undefined ||   emp.workingProjects === null){
+                emp.workingProjects = [project._id]
+            }else{
+                emp.workingProjects.push(project._id);
+            }
+            emp.save();
+        });
         console.log(req.body)
         project.save()
         res.send({status: 201, message: "hey Vihaan"})

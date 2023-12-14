@@ -16,7 +16,7 @@ const schema = mongoose.Schema(
         password: String,
         empId: String,
         id:String,
-        workingProjects: [Number],
+        workingProjects: [{type: Schema.Types.ObjectId, default: [], ref:'Prpject'}],
         finishedProjects:[Number],
     }
 )

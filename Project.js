@@ -12,7 +12,6 @@ const schema = new mongoose.Schema({
     // inProgress: {type: [Task.schema], default: []},
     // inReview:{type: [Task.schema], default: []},
     // completed: {type: [Task.schema], default: []},
-    projectId: Number
 })
 
 module.exports = mongoose.model("Project",schema)
